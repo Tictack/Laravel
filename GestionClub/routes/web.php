@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ControleurBiographies;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,12 +18,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('membres', 'App\Http\Controllers\ControleurMembres@index');
+Route::get('membres', [App\Http\Controllers\ControleurMembres::class, 'index'])->name('membres');
 Route::get('membre/{numero}', 'App\Http\Controllers\ControleurMembres@afficher');
 Route::get('creer', 'App\Http\Controllers\ControleurMembres@creer');
 Route::post('creation/membre', 'App\Http\Controllers\ControleurMembres@enregistrer');
 Route::get('modifier/{id}', 'App\Http\Controllers\ControleurMembres@editer');
-Route::patch('miseAJour/{id}', 'App\Http\Controllers\ControleurMembres@miseAJour');
+Route::patch('miseAJour/{id}', [App\Http\Controllers\ControleurMembres::class, 'miseAJour']);
+
+Route::get('modifierbio/{id}', [ControleurBiographies::class, 'edit'])->name('biographie.edition');
+Route::patch('miseAJourbio/{id}', [ControleurBiographies::class, 'update'])->name('biographie.update');
+
 
 Route::get('/identite','App\Http\Controllers\ControleurMembres@identite');
 Route::get('/protege','App\Http\Controllers\ControleurMembres@acces_protege')->middleware('auth');

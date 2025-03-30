@@ -20,7 +20,7 @@ $les_membres = $this->les_membres->all();
 return view('pages_site/consultation_edition', compact('les_membres'));
 }
 public function afficher($numero) {
-$un_membre = membre::findOrFail($numero);
+    $un_membre = Membre::with('biographie')->findOrFail($numero);
 return view('pages_site/membre', compact('un_membre'));
 }
 public function creer() {
@@ -32,21 +32,44 @@ $membre->nom = $request->nom;
 $membre->adresse = $request->adresse;
 $membre->prenom = $request->prenom;
 $membre->save();
-return "Membre créé";
+    // Retourne un message de succès ou redirection vers une autre page
+    return redirect()->route('membres')->with('success', 'Membre créé');
 }
 public function editer($numero) {
 $un_membre = $this->les_membres->find($numero);
 return view('pages_site/edition', compact('un_membre'));
 }
 public function miseAJour($numero) {
-$un_membre = $this->les_membres->find($numero);
-$la_soumission = $this->soumissions;
-$un_membre->nom =$la_soumission->nom;
-$un_membre->prenom =$la_soumission->prenom;
-$un_membre->adresse =$la_soumission->adresse;
-$un_membre->save();
-return "Membre modifié";
+        $un_membre = $this->les_membres->find($numero);
+        $la_soumission = $this->soumissions;
+
+
+        // Mise à jour des informations du membre
+        $un_membre->nom = $la_soumission->nom;
+        $un_membre->prenom = $la_soumission->prenom;
+        $un_membre->adresse = $la_soumission->adresse;
+
+        if (isset($la_soumission->biographie['texte'])) {
+            $biographieTexte = $la_soumission->biographie['texte'];
+
+            if ($un_membre->biographie) {
+                // Si la biographie existe déjà, on la met à jour
+                $un_membre->biographie->texte = $biographieTexte;
+                $un_membre->biographie->save();  // Sauvegarde de la biographie modifiée
+            } else {
+                // Si la biographie n'existe pas, on en crée une nouvelle
+                $un_membre->biographie()->create([
+                    'texte' => $biographieTexte
+                ]);
+            }
+        }
+
+        $un_membre->save();
+
+        // Rediriger après la modification
+        return redirect()->route('membres')->with('success', 'Membre modifié');
 }
+
 public function identite() {
 if (Auth::check())
 {
