@@ -56,18 +56,6 @@
             }
         </style>
 
-        <nav class="bg-gray-800 p-4 text-white">
-            <ul class="flex">
-                <li class="nav-item"><a href="{{ route('register') }}" class="hover:underline">S'enregistrer</a></li>
-                <li class="nav-item"><a href="{{ route('login') }}" class="hover:underline">Se connecter</a></li>
-                <li class="nav-item"><a href="{{ url('membres') }}" class="hover:underline">Consulter les membres</a></li>
-                <li class="nav-item"><a href="{{ url('creer') }}" class="hover:underline">Ajouter un membre</a></li>
-                @if(auth()->check())
-                <li class="nav-item"><a href="{{ url('modifier/' . auth()->user()->id) }}" class="hover:underline">Modifier détails</a></li>
-                @endif
-            </ul>
-        </nav>
-
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif

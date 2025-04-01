@@ -50,6 +50,15 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        // Vérifier si l'utilisateur est approuvé
+        $user = Auth::user();
+        if (!$user->is_approved) {
+            Auth::logout(); // Déconnecte immédiatement l'utilisateur non approuvé
+            throw ValidationException::withMessages([
+                'email' => 'Votre compte doit être approuvé par un administrateur.',
+            ]);
+        }
     }
 
     /**

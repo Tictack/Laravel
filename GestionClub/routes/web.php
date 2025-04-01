@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ControleurBiographies;
 use Illuminate\Support\Facades\Route;
@@ -31,5 +32,10 @@ Route::patch('miseAJourbio/{id}', [ControleurBiographies::class, 'update'])->nam
 
 Route::get('/identite','App\Http\Controllers\ControleurMembres@identite');
 Route::get('/protege','App\Http\Controllers\ControleurMembres@acces_protege')->middleware('auth');
+
+
+Route::get('/admin/users', [AdminController::class, 'index'])->name('admin.users');
+Route::post('/admin/users/{id}/approve', [AdminController::class, 'approve'])->name('admin.users.approve');
+
 
 require __DIR__.'/auth.php';
